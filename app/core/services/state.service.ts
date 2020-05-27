@@ -1,27 +1,28 @@
 import { State } from '../models/state.model';
-import { Storage } from  './storage.service';
+import { appStorage } from  './storage.service';
 
-const APP_STATE_KEY = 'APP_STATE_KEY';
+export const APP_STATE_KEY = 'APP_STATE_KEY';
 
 export const INITIAL_STATE: State = {
-    sensorItems: []
+    sensorItems: [],
+    currentUser: undefined,
 };
 
 export class AppState {
     constructor() {
-        Storage.setItem(APP_STATE_KEY, INITIAL_STATE);
+        appStorage.setItem(APP_STATE_KEY, INITIAL_STATE);
     }
     public getStateItem(name: string) {
-        const appState = Storage.getItem(APP_STATE_KEY);
+        const appState = appStorage.getItem(APP_STATE_KEY);
         return appState[name];
     }
 
     public setStateItem(name, state) {
-        Storage.setItem(APP_STATE_KEY, {
-            ...Storage.getItem(APP_STATE_KEY),
+        appStorage.setItem(APP_STATE_KEY, {
+            ...appStorage.getItem(APP_STATE_KEY),
             [name]: state
         });
     }
 }
 
-const appState = new AppState();
+export const appState = new AppState();

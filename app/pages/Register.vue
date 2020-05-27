@@ -1,10 +1,15 @@
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="*, *, *, 2*, *">
+        <GridLayout rows="*, *, 2*, *">
             <Image row="0" src="~/assets/images/LOGO.png" />
-            <Label row="1" text="Login your account"></Label>
-            <Label row="2" textWrap="true" class="small-text">Sensor not found yet, check the lights, maybe you are not change senor in Settings mode</Label>
-            <StackLayout row="3">
+            <Label row="1" text="Create your account"></Label>
+            <StackLayout row="2">
+                <StackLayout>
+                    <TextField
+                        autocorrect="false"
+                        hint="Your name and surname" 
+                        returnKeyType="next"></TextField>
+                </StackLayout>
                 <StackLayout>
                     <TextField
                         keyboardType="email"
@@ -18,19 +23,16 @@
                         secure="true" 
                         returnKeyType="done"></TextField>
                 </StackLayout>
-                <Button @tap="login" text="Login"></Button>
+                <Button @tap="register" text="Register"></Button>
             </StackLayout>
-            <Label row="4" @tap="toRegitster" textWrap="true" class="small-text red">Doesn't have account yet? Register</Label>
+            <Label row="3" @tap="toLogin" textWrap="true" class="small-text red">Already have account? Sign in</Label>
         </GridLayout>
     </Page>
 </template>
 <script lang="ts">
   import Vue from 'nativescript-vue';
-  import { authService } from '../core/services/auth.service';
-  // import { isIOS, isAndroid } from 'tns-core-modules/ui/frame/frame';
+  import { authService } from '@/core/services/auth.service';
   import { NavigationService } from '@/core/services/navigation.service';
-  import { LoginModel } from '../core/models/login.model';
-  import { fetchData } from '../components/helpers';
   
   export default Vue.extend({
     data() {
@@ -44,21 +46,11 @@
 
     },
     methods: {
-      login() {
-        console.log('AUTH START');
-
-        const loginModel: LoginModel = {
-            username: this.email,
-            password: this.password
-        };
-
-        console.log('Login model', loginModel);
-        authService.login(loginModel).then(() => {
-            NavigationService.getInstance().goToDashboardPage();
-        });
+      register() {
+        
       },
-      toRegitster(){
-        NavigationService.getInstance().goToRegisterPage();
+      toLogin(){
+          NavigationService.getInstance().goToLoginPage();
       }
     }
   });

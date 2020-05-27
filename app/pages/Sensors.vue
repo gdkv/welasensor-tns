@@ -2,6 +2,7 @@
     <Page actionBarHidden="true">
         <ScrollView orientation="vertical" class="wrapper">
             <StackLayout>
+                <Header />
                 <Sensor v-for="sensor in sensors" class="sensor"
                     :key="sensor.id"
                     :mac="sensor.mac"
@@ -15,11 +16,12 @@
 
 <script lang="ts">
     import Vue from 'nativescript-vue';
-    import Sensor from '../components/Sensor.vue';
+    import Sensor from '@/components/UI/sensor/Sensor.vue';
+    import Header from '@/components/UI/layout/Header.vue';
     import { ScrollView } from "tns-core-modules/ui/scroll-view";
 
     export default Vue.extend({
-        components: { Sensor },
+        components: { Header, Sensor },
         data() {
             return {
                 sensors: [

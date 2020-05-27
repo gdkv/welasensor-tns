@@ -22,4 +22,4 @@ export class StorageService {
         appSettings.clear();
     }
 }
-export const Storage = new StorageService();
+export const appStorage = new StorageService();

@@ -2,23 +2,15 @@ import { LoginModel } from '../models/login.model';
 import { appConfig } from '@/config/app-config';
 import { Token } from '../models/token.model';
 import { User } from '../models/user.model';
-import { Storage } from  './storage.service';
+import { appStorage } from  './storage.service';
+import { APP_STATE_KEY, INITIAL_STATE, appState } from './state.service';
 
 const AUTH_TOKEN_KEY = 'AUTH_TOKEN_KEY';
 const AUTH_USER_KEY = 'AUTH_USER_KEY';
 
 export class AuthService {
-
-    private loggedIn = false;
-
-    public isLoggedIn() {
-        return this.loggedIn;
-    }
-
     public login(loginModel: LoginModel){
-        // this.loggedIn = true;
-        // return Promise.resolve(true);
-        console.log('START LOGIN');
+        console.log('START AUTH USER ON', `${appConfig.apiEndpoint}/auth/login`);
         return fetch(`${appConfig.apiEndpoint}/auth/login`, {
             method: 'POST',
             headers: {
@@ -33,27 +25,44 @@ export class AuthService {
         .then((data: { token: Token, user: User }) => {
               this.setToken(data.token);
               this.setUser(data.user);
-              console.log(data);
+              console.log('AUTH SERVICE FINISHED, RETURN TO LOGIN');
         });
     }
-    private setUser(authUser: User) {
-        Storage.setItem('user', authUser);
-        this.loggedIn = true;
-        // throw new Error("Method not implemented.");
+
+    public logout(): Promise<void> {
+        appStorage.removeItem(AUTH_TOKEN_KEY);
+        appStorage.setItem(APP_STATE_KEY, INITIAL_STATE);
+        return Promise.resolve();
     }
-    
-    private setToken(authToken: Token) {
-        Storage.setItem(AUTH_TOKEN_KEY, authToken);
-        // console.log(authToken);
-        // throw new Error("Method not implemented.");
+
+    public isLoggedIn(): boolean {
+        const hasToken = !!this.getToken();
+        const hasUser = !!this.getUserId();
+        return hasToken && hasUser;
+    }
+
+    private setUser(authUser: User) {
+        appState.setStateItem('currentUser', authUser);
     }
 
     public getUser() {
-        Storage.getItem(AUTH_USER_KEY);
+        return appState.getStateItem('currentUser');
+    }
+
+    public getUserId(): number {
+        const user = this.getUser();
+        if(user){
+            return user.id;
+        }
+        return undefined;        
+    }
+
+    private setToken(authToken: Token) {
+        appStorage.setItem(AUTH_TOKEN_KEY, authToken);
     }
 
     public getToken() {
-        Storage.getItem(AUTH_TOKEN_KEY);
+        return appStorage.getItem(AUTH_TOKEN_KEY);
     }
 }
 
